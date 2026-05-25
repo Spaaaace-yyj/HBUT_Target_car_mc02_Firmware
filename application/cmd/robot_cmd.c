@@ -9,6 +9,8 @@
 #include "general_def.h"
 #include "dji_motor.h"
 #include "bmi088.h"
+#include "bsp_usart.h"
+#include "seasky_protocol.h"
 
 // bsp
 #include "bsp_dwt.h"
@@ -33,12 +35,29 @@ static Robot_Status_e Robot_State;//机器人整体工作状态
 BMI088Instance *bmi088_test;
 BMI088_Data_t bmi088_data;
 
+USARTInstance *esp32_uart;
+ESP32_recv_data_s esp_recv_data;
+
 static float target_yaw = 0;
+
+void ESP32_uart_callback()
+{
+    uint16_t flag;
+    get_protocol_info(esp32_uart->recv_buff, &flag, (uint8_t *)&esp_recv_data.enableCar);
+}
 
 void RobotCMDInit()
 {
     rc_data = RemoteControlInit(&huart5);   // 修改为对应串口,注意如果是自研板dbus协议串口需选用添加了反相器的那个
     vision_recv_data = VisionInit(&huart9); // 视觉通信串口
+
+    USART_Init_Config_s uart_conf = {
+        .recv_buff_size = 64,
+        .usart_handle = &huart8,
+        .module_callback = ESP32_uart_callback,
+    };
+
+    esp32_uart = USARTRegister(&uart_conf);
 
     Chassis_Cmd_Pub = PubRegister("Chassis_Cmd",sizeof(Chassis_Ctrl_Cmd_s));
     Chassis_Feed_Sub = SubRegister("Chassis_Feed",sizeof(Chassis_Upload_Data_s));
@@ -53,27 +72,33 @@ void RobotCMDInit()
  */
 static void RemoteControlSet(void)
 {
-    if (switch_is_down(rc_data[TEMP].rc.switch_left)) {
-        Chassis_Cmd_Send.chassis_mode =CHASSIS_ZERO_FORCE;
+    if (esp_recv_data.enableCar == 1)
+    {
+        Chassis_Cmd_Send.rotateSpeed = esp_recv_data.rotateSpeed;
+        Chassis_Cmd_Send.LinearSpeed = esp_recv_data.linearSpeed;
+    }else
+    {
+        Chassis_Cmd_Send.rotateSpeed = 0.0f;
+        Chassis_Cmd_Send.LinearSpeed = 0.0f;
+    }
+    if (esp_recv_data.moveMode == 0)
+    {
+        Chassis_Cmd_Send.chassis_move_mode = CHASSIS_POINT_MOVE;
+    }else if (esp_recv_data.moveMode == 1)
+    {
+        Chassis_Cmd_Send.chassis_move_mode = CHASSIS_AB_MODE;
     }
 
-    else if (switch_is_mid(rc_data[TEMP].rc.switch_left)) {
-        Chassis_Cmd_Send.chassis_mode = CHASSIS_NORMAL;
+    Chassis_Cmd_Send.ABModeState = esp_recv_data.startABMove;
+    if (Chassis_Cmd_Send.rotateSpeed >= 2.0f)
+    {
+        Chassis_Cmd_Send.rotateSpeed = 2.0f;
+    }else if (Chassis_Cmd_Send.rotateSpeed <= -2.0f)
+    {
+        Chassis_Cmd_Send.rotateSpeed = -2.0f;
     }
-    //差速底盘只有角速度和Vx
-    Chassis_Cmd_Send.vx = rc_data[TEMP].rc.rocker_l1 * 20.0f;
-    Chassis_Cmd_Send.wz = rc_data[TEMP].rc.rocker_r_ * 0.08f;
-    // target_yaw += Chassis_Cmd_Send.wz;
-    //
-    // while (target_yaw - Chassis_Cmd_Send.now_yaw_angle >= 180.0f)
-    // {
-    //     target_yaw -= 360.0f;
-    // }
-    // while (target_yaw - Chassis_Cmd_Send.now_yaw_angle <= -180.0f)
-    // {
-    //     target_yaw += 360.0f;
-    // }
 }
+
 /* 机器人核心控制任务,200Hz频率运行(必须高于视觉发送频率) */
 void RobotCMDTask()
 {

@@ -130,9 +130,63 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
     {
         if (huart == usart_instance[i]->usart_handle)
         {
-            HAL_UARTEx_ReceiveToIdle_DMA(usart_instance[i]->usart_handle, usart_instance[i]->recv_buff, usart_instance[i]->recv_buff_size);
-            __HAL_DMA_DISABLE_IT(usart_instance[i]->usart_handle->hdmarx, DMA_IT_HT);
-            LOGWARNING("[bsp_usart] USART error callback triggered, instance idx [%d]", i);
+            uint32_t error = HAL_UART_GetError(huart);
+
+            LOGWARNING("[bsp_usart] USART error callback triggered, instance idx [%d], error = 0x%08lx",
+                       i, error);
+
+            /*
+             * 1. 先终止当前接收
+             *    ORE/FE/NE 之后，HAL 内部状态可能已经异常。
+             */
+            HAL_UART_AbortReceive(huart);
+
+            /*
+             * 2. 清错误标志
+             */
+            if (__HAL_UART_GET_FLAG(huart, UART_FLAG_ORE) != RESET)
+            {
+                __HAL_UART_CLEAR_OREFLAG(huart);
+            }
+
+            if (__HAL_UART_GET_FLAG(huart, UART_FLAG_FE) != RESET)
+            {
+                __HAL_UART_CLEAR_FEFLAG(huart);
+            }
+
+            if (__HAL_UART_GET_FLAG(huart, UART_FLAG_NE) != RESET)
+            {
+                __HAL_UART_CLEAR_NEFLAG(huart);
+            }
+
+            if (__HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE) != RESET)
+            {
+                __HAL_UART_CLEAR_IDLEFLAG(huart);
+            }
+
+            /*
+             * 3. 重新启动 DMA + IDLE 接收
+             */
+            HAL_StatusTypeDef ret = HAL_UARTEx_ReceiveToIdle_DMA(
+                huart,
+                usart_instance[i]->recv_buff,
+                usart_instance[i]->recv_buff_size
+            );
+
+            if (huart->hdmarx != NULL)
+            {
+                __HAL_DMA_DISABLE_IT(huart->hdmarx, DMA_IT_HT);
+            }
+
+            if (ret != HAL_OK)
+            {
+                LOGWARNING("[bsp_usart] USART recover failed, ret = %d", ret);
+            }
+            else
+            {
+                LOGWARNING("[bsp_usart] USART recover success");
+            }
+
             return;
         }
     }

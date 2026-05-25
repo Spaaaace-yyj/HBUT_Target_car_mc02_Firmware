@@ -24,12 +24,11 @@ static float Chassis_Target_Velocity = 0,Chassis_Target_Angular_Velocity = 0;//�
 static volatile float Chassis_Target_VLF = 0,Chassis_Target_VLB = 0,Chassis_Target_VRF = 0,Chassis_Target_VRB=0;//每个轮子的目标速度
 
 void ChassisInit() {
-    //四个轮子的参数是一样的，只是ID和转速有差别从后往前看顺时针左上为ID1
     Motor_Init_Config_s Chassis_Motor_config ={
         .can_init_config = &hcan2, // 修改为对应的CAN接口
         .controller_param_init_config = {
             .speed_PID = {
-                .Kp = 70.0f,
+                .Kp = 100.0f,
                 .Ki = 0.0f,
                 .Kd = 0.0f,
                 .IntegralLimit = 5000,
@@ -70,10 +69,14 @@ void ChassisInit() {
 void ChassisTask()
 {
     SubGetMessage(Chassis_Sub,&Chassis_Cmd_Recv);//获取底盘命令信息
-    DJIMotorEnable(yaw_motor);
-    DJIMotorSetRef(yaw_motor, 300);
-
-
+    if (Chassis_Cmd_Recv.rotateSpeed == 0)
+    {
+        DJIMotorStop(yaw_motor);
+    }else
+    {
+        DJIMotorEnable(yaw_motor);
+    }
+    DJIMotorSetRef(yaw_motor, (Chassis_Cmd_Recv.rotateSpeed * 360.0f));
 
     PubPushMessage(Chassis_Pub,(void *)&Chassis_Feedback_Data);//发布底盘反馈数据,目前还没有填充数据,后续增加
 }

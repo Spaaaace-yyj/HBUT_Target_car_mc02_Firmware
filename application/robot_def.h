@@ -89,6 +89,12 @@ typedef enum
     CHASSIS_NORMAL,
 } chassis_mode_e;
 
+typedef enum
+{
+    CHASSIS_POINT_MOVE,
+    CHASSIS_AB_MODE,
+} chassis_move_mode_e;
+
 // 云台模式设置
 typedef enum
 {
@@ -147,9 +153,11 @@ typedef struct
     float target_angle;
     chassis_mode_e chassis_mode;
     int chassis_speed_buff;
-    // UI部分
-    //  ...
 
+    float rotateSpeed;
+    float LinearSpeed;
+    chassis_move_mode_e chassis_move_mode;
+    float ABModeState;
 } Chassis_Ctrl_Cmd_s;
 
 // cmd发布的云台控制数据,由gimbal订阅
