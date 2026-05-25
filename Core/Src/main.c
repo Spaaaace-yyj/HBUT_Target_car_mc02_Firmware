@@ -82,7 +82,8 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  // SCB->VTOR = 0x8020000;
+  //指向正确的向量表
+  SCB->VTOR = 0x8020000;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
