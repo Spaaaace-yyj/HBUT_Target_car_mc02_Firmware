@@ -1,20 +1,8 @@
-# basic_framework for DM-MC02 
+# HBUT_Target_car_mc02_Firmware 
 
-为基于H723VGT6主控的达妙MC02开发板移植的湖大跃鹿战队电控通用嵌入式框架。
+由湖南大学RoboMaster跃鹿战队2022-2023电控通用嵌入式框架修改
 
-主要改动有：修改BSP层，如设置FDCAN兼容CAN2.0标准的设置、适配M7内核的DSP库等。
-
-目前还没适配：Flash模块和USB模块，因此在Makefile里去掉了相关编译选项。
-
-原始仓库的Gitee链接：https://gitee.com/hnuyuelurm/basic_framework
-
-达妙MC-02开发板资料仓库链接：https://gitee.com/kit-miao/dm-mc02
-
-如果要使用JLink调试，建议采用JLink V9以上版本，因为V7或OB版本不支持H7系列MCU的调试。V8暂未测试。
-
-联系方式：QQ 2609008122
-
-以下是原来的框架说明：
+用于湖北工业大学Robomaster靶车的嵌入式代码，实现和ESP32通讯，并且尝试使用OTA升级
 
 ------
 
