@@ -17,7 +17,7 @@ static Subscriber_t *Chassis_Sub;//用于订阅底盘的控制命令
 static  Chassis_Ctrl_Cmd_s Chassis_Cmd_Recv;//底盘接收到的控制命令
 static  Chassis_Upload_Data_s Chassis_Feedback_Data;//底盘回传的反馈数据
 
-static DJIMotorInstance *yaw_motor;
+static DJIMotorInstance *yaw_motor, *move_motor;
 static PIDInstance chassis_follow_yaw_controller;
 
 static float Chassis_Target_Velocity = 0,Chassis_Target_Angular_Velocity = 0;//底盘的目标线速度和角速度
@@ -58,7 +58,40 @@ void ChassisInit() {
     Chassis_Motor_config.controller_setting_init_config.motor_reverse_flag = MOTOR_DIRECTION_REVERSE;
     yaw_motor = DJIMotorInit(&Chassis_Motor_config);
 
+    Motor_Init_Config_s Move_Motor_config ={
+        .can_init_config = &hcan2, // 修改为对应的CAN接口
+        .controller_param_init_config = {
+            .speed_PID = {
+                .Kp = 10.0f,
+                .Ki = 0.0f,
+                .Kd = 0.0f,
+                .IntegralLimit = 5000,
+                .Improve = PID_Trapezoid_Intergral | PID_Integral_Limit | PID_Derivative_On_Measurement | PID_OutputFilter | PID_DerivativeFilter,
+                .MaxOut = 15000,
+                .Output_LPF_RC = 1.0f,
+                .Derivative_LPF_RC = 1.0f,
+            },
+            .current_PID = {
+                .Kp = 1.0, // 0.5
+                .Ki = 0,   // 0
+                .Kd = 0,
+                .IntegralLimit = 3000,
+                .Improve = PID_Trapezoid_Intergral | PID_Integral_Limit | PID_Derivative_On_Measurement,
+                .MaxOut = 15000,
+            },
+        },
+        .controller_setting_init_config = {
+            .angle_feedback_source = MOTOR_FEED,
+            .speed_feedback_source = MOTOR_FEED,
+            .outer_loop_type = SPEED_LOOP,
+            .close_loop_type = SPEED_LOOP,
+            },
+            .motor_type = M3508,
+        };
+    Move_Motor_config.can_init_config.tx_id = 3;
+    Move_Motor_config.controller_setting_init_config.motor_reverse_flag = MOTOR_DIRECTION_REVERSE;
 
+    move_motor = DJIMotorInit(&Move_Motor_config);
 
     Chassis_Sub = SubRegister("Chassis_Cmd",sizeof(Chassis_Ctrl_Cmd_s));
     Chassis_Pub = PubRegister("Chassis_Feed",sizeof(Chassis_Upload_Data_s));
@@ -76,6 +109,9 @@ void ChassisTask()
     {
         DJIMotorEnable(yaw_motor);
     }
+    DJIMotorEnable(move_motor);
+    DJIMotorSetRef(move_motor, 500);
+
     DJIMotorSetRef(yaw_motor, (Chassis_Cmd_Recv.rotateSpeed * 360.0f));
 
     PubPushMessage(Chassis_Pub,(void *)&Chassis_Feedback_Data);//发布底盘反馈数据,目前还没有填充数据,后续增加

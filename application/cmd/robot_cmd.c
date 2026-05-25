@@ -16,6 +16,7 @@
 #include "bsp_dwt.h"
 #include "bsp_log.h"
 #include "bsp_usb.h"
+#include "cmsis_os.h"
 // 私有宏,自动将编码器转换成角度值
 #define YAW_ALIGN_ANGLE (YAW_CHASSIS_ALIGN_ECD * ECD_ANGLE_COEF_DJI) // 对齐时的角度,0-360
 #define PTICH_HORIZON_ANGLE (PITCH_HORIZON_ECD * ECD_ANGLE_COEF_DJI) // pitch水平时电机的角度,0-360
@@ -39,6 +40,19 @@ USARTInstance *esp32_uart;
 ESP32_recv_data_s esp_recv_data;
 
 static float target_yaw = 0;
+
+//OTA升级测试
+// void request_ota_update(void)
+// {
+//     HAL_PWR_EnableBkUpAccess();
+//
+//     RTC->BKP0R = OTA_MAGIC_VALUE;
+//
+//     __DSB();
+//     __ISB();
+//
+//     NVIC_SystemReset();
+// }
 
 void ESP32_uart_callback()
 {
@@ -104,6 +118,11 @@ void RobotCMDTask()
 {
     VisionSend(&vision_send_data);
     RemoteControlSet();
+    // OTA升级测试
+    // uint8_t send_buff[20] = "Test Reset \n";
+    // USARTSend(esp32_uart, send_buff, 20, USART_TRANSFER_BLOCKING);
+    // osDelay(100);
+    // request_ota_update();
     SubGetMessage(Chassis_Feed_Sub, (void *)&Chassis_Fetch_Data);
     PubPushMessage(Chassis_Cmd_Pub, (void *)&Chassis_Cmd_Send);
 
