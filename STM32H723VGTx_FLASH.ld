@@ -66,7 +66,7 @@ _Min_Stack_Size = 0x5000; /* required amount of stack */
 /*RAM_D2 (xrw)      : ORIGIN = 0x30000000, LENGTH = 32K*/
 /*RAM_D3 (xrw)      : ORIGIN = 0x38000000, LENGTH = 16K*/
 /*ITCMRAM (xrw)      : ORIGIN = 0x00000000, LENGTH = 64K*/
-/*FLASH (rx)      : ORIGIN = 0x8020000, LENGTH = 1024K*/
+/*FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 1024K*/
 /*}*/
 
 MEMORY
@@ -76,7 +76,7 @@ RAM (xrw)      : ORIGIN = 0x24000000, LENGTH = 320K
 RAM_D2 (xrw)   : ORIGIN = 0x30000000, LENGTH = 32K
 RAM_D3 (xrw)   : ORIGIN = 0x38000000, LENGTH = 16K
 ITCMRAM (xrw)  : ORIGIN = 0x00000000, LENGTH = 64K
-FLASH (rx)     : ORIGIN = 0x8000000, LENGTH = 896K
+FLASH (rx)     : ORIGIN = 0x8020000, LENGTH = 896K
 }
 
 /* Define output sections */

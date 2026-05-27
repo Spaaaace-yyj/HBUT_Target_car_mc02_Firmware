@@ -119,10 +119,8 @@ void RobotCMDTask()
     VisionSend(&vision_send_data);
     RemoteControlSet();
     // OTA升级测试
-    uint8_t send_buff[20] = "Test Reset \n";
-    USARTSend(esp32_uart, send_buff, 20, USART_TRANSFER_BLOCKING);
-    osDelay(100);
     request_ota_update();
+
     SubGetMessage(Chassis_Feed_Sub, (void *)&Chassis_Fetch_Data);
     PubPushMessage(Chassis_Cmd_Pub, (void *)&Chassis_Cmd_Send);
 
