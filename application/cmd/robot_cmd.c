@@ -41,6 +41,19 @@ ESP32_recv_data_s esp_recv_data;
 
 static float target_yaw = 0;
 
+// OTA升级测试
+ void request_ota_update(void)
+ {
+     HAL_PWR_EnableBkUpAccess();
+
+     RTC->BKP0R = OTA_MAGIC_VALUE;
+
+     __DSB();
+     __ISB();
+
+     NVIC_SystemReset();
+ }
+
 void ESP32_uart_callback()
 {
     uint16_t flag;
@@ -105,6 +118,9 @@ void RobotCMDTask()
 {
     VisionSend(&vision_send_data);
     RemoteControlSet();
+    // OTA升级测试
+    request_ota_update();
+
     SubGetMessage(Chassis_Feed_Sub, (void *)&Chassis_Fetch_Data);
     PubPushMessage(Chassis_Cmd_Pub, (void *)&Chassis_Cmd_Send);
 
