@@ -24,9 +24,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="74122861-c9c0-491b-a89b-e9fa2efd616f" name="更改" comment="测试OTA">
+    <list default="true" id="74122861-c9c0-491b-a89b-e9fa2efd616f" name="更改" comment="修复#define OTA_MAGIC_VALUE 0xA5A55A5A&#10;未定义">
+      <change afterPath="$PROJECT_DIR$/version.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/robot_def.h" beforeDir="false" afterPath="$PROJECT_DIR$/application/robot_def.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779863666039</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="修复#define OTA_MAGIC_VALUE 0xA5A55A5A&#10;未定义">
+      <option name="closed" value="true" />
+      <created>1779863769018</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1779863769018</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,7 +228,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="实现和ESP32通讯，通过ESP32控制靶车转速" />
     <MESSAGE value="测试OTA" />
-    <option name="LAST_COMMIT_MESSAGE" value="测试OTA" />
+    <MESSAGE value="Merge branch 'OTA-dev'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Core/Src/main.c&#10;#&#9;STM32H723VGTx_FLASH.ld&#10;#&#9;application/cmd/robot_cmd.c" />
+    <MESSAGE value="修复#define OTA_MAGIC_VALUE 0xA5A55A5A&#10;未定义" />
+    <option name="LAST_COMMIT_MESSAGE" value="修复#define OTA_MAGIC_VALUE 0xA5A55A5A&#10;未定义" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
