@@ -119,7 +119,11 @@ void RobotCMDTask()
     VisionSend(&vision_send_data);
     RemoteControlSet();
     // OTA升级测试
-    request_ota_update();
+     if (esp_recv_data.enableCar >= 1.5)
+     {
+         HAL_Delay(5000);
+         request_ota_update();
+     }
 
     SubGetMessage(Chassis_Feed_Sub, (void *)&Chassis_Fetch_Data);
     PubPushMessage(Chassis_Cmd_Pub, (void *)&Chassis_Cmd_Send);
