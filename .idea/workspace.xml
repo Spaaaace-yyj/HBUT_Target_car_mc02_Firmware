@@ -24,13 +24,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="74122861-c9c0-491b-a89b-e9fa2efd616f" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/modules/json_protocol/json_protocol.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modules/json_protocol/json_protocol.h" afterDir="false" />
+    <list default="true" id="74122861-c9c0-491b-a89b-e9fa2efd616f" name="更改" comment="添加json protocol协议，测试OTA自动下载链路">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/cmd/robot_cmd.c" beforeDir="false" afterPath="$PROJECT_DIR$/application/cmd/robot_cmd.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/robot_def.h" beforeDir="false" afterPath="$PROJECT_DIR$/application/robot_def.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.json" beforeDir="false" afterPath="$PROJECT_DIR$/version.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -221,7 +216,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779863769018</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="添加json protocol协议，测试OTA自动下载链路">
+      <option name="closed" value="true" />
+      <created>1779957798242</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1779957798242</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,7 +247,8 @@
     <MESSAGE value="Merge branch 'OTA-dev'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Core/Src/main.c&#10;#&#9;STM32H723VGTx_FLASH.ld&#10;#&#9;application/cmd/robot_cmd.c" />
     <MESSAGE value="修复#define OTA_MAGIC_VALUE 0xA5A55A5A&#10;未定义" />
     <MESSAGE value="实现接受ESP32的OTA升级标志位（esp_recv_data.enableCar = 2），自动进入升级模式。" />
-    <option name="LAST_COMMIT_MESSAGE" value="实现接受ESP32的OTA升级标志位（esp_recv_data.enableCar = 2），自动进入升级模式。" />
+    <MESSAGE value="添加json protocol协议，测试OTA自动下载链路" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加json protocol协议，测试OTA自动下载链路" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
