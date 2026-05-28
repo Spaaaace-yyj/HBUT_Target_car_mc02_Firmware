@@ -142,6 +142,7 @@ modules/can_comm/can_comm.c \
 modules/message_center/message_center.c \
 modules/daemon/daemon.c \
 modules/alarm/buzzer.c \
+modules/json_protocol/json_protocol.c \
 application/chassis/chassis.c \
 application/cmd/robot_cmd.c \
 application/robot.c \
@@ -256,6 +257,7 @@ C_INCLUDES =  \
 -Imodules/message_center \
 -Imodules/daemon \
 -Imodules/alarm \
+-Imodules/json_protocol \
 -Imodules \
 -IMiddlewares/ST/ARM/DSP/Inc \
 -IMiddlewares/ST/ARM/DSP/Include/dsp \

@@ -11,6 +11,7 @@
 #include "bmi088.h"
 #include "bsp_usart.h"
 #include "seasky_protocol.h"
+#include "json_protocol/json_protocol.h"
 
 // bsp
 #include "bsp_dwt.h"
@@ -119,11 +120,17 @@ void RobotCMDTask()
     VisionSend(&vision_send_data);
     RemoteControlSet();
     // OTA升级测试
-     if (esp_recv_data.enableCar >= 1.5)
-     {
-         HAL_Delay(5000);
-         request_ota_update();
-     }
+    if (esp_recv_data.enableCar >= 1.5)
+    {
+        // json_send_ota_state(
+        //     &huart8,
+        //     "ready"
+        // );
+        HAL_Delay(5000);
+        request_ota_update();
+    }
+
+     // json_send_status(&huart8, 0.82, FIRMWARE_VERSION, 1);
 
     SubGetMessage(Chassis_Feed_Sub, (void *)&Chassis_Fetch_Data);
     PubPushMessage(Chassis_Cmd_Pub, (void *)&Chassis_Cmd_Send);
